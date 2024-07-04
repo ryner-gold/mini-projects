@@ -1,4 +1,3 @@
-import java.util.Arrays;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -21,30 +20,34 @@ public class QuizGameTwo {
     }
   };
 
+  private static final String[] answers = {"C", "B", "B"};
+
+  private static final boolean[] askedQuestions = new boolean[questions.length];
+  private static int remainingQuestions = questions.length;
+
   private static int askQuestions() {
+    while (remainingQuestions > 0) {
+      int questionIndex;
+      do {
+        questionIndex = rand.nextInt(questions.length);
+      } while (askedQuestions[questionIndex]);
 
-    int questionsIndex = 0; // questionsIndex
-    for (int i = 0, c = 0; i < questions.length; i++) {
-      System.out.println(questions[i][c]); // Print the question
+      askedQuestions[questionIndex] = true;
+      remainingQuestions--;
 
-      for (int optionsIndex = 1; optionsIndex < questions[c].length; optionsIndex++) {
-        System.out.println(
-            questions[questionsIndex][
-                optionsIndex]); // Print each option, option starts at 1 to skip the question at
-                                // each sub-array[0]
+      System.out.println(questions[questionIndex][0]); // Print the question
+      for (int i = 1; i < questions[questionIndex].length; i++) {
+        System.out.println(questions[questionIndex][i]); // Print each option
       }
 
-      questionsIndex++; // Next element in questions array
-
-      // get & process answer
       choice = getAnswer();
-      if (processAnswer(choice, c)) {
+      if (processAnswer(choice, questionIndex)) {
+        System.out.println("Correct!");
         score++;
       } else {
-        System.out.println("WRONG");
+        System.out.println("Wrong. The correct answer is: " + answers[questionIndex]);
       }
     }
-
     return score;
   }
 
@@ -59,8 +62,9 @@ public class QuizGameTwo {
     return choice;
   }
 
-  private static boolean processAnswer(String choice, int questionsIndex) {
-    return false;
+  private static boolean processAnswer(String choice, int innerArr) {
+    System.out.println("You chosen: " + choice);
+      return choice.trim().equalsIgnoreCase(answers[innerArr]);
   }
 
   // Method to run the quiz
